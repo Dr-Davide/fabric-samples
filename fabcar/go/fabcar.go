@@ -88,37 +88,6 @@ func main() {
 	// we initialize our Users array
 	var gbtr GBtrs
 
-	/*
-		// Open our jsonFile
-		fmt.Println("Loading gbTransactions.json")
-		jsonFile, err := os.Open("gbTransactions/gbTransactions.json")
-		// if we os.Open returns an error then handle it
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Println("Loading gbTransactions.json successfull")
-		// defer the closing of our jsonFile so that we can parse it later on
-		defer jsonFile.Close()
-
-		// read our opened jsonFile as a byte array.
-		byteValue, r := ioutil.ReadAll(jsonFile)
-		if r != nil {
-			fmt.Println(err)
-		}
-
-
-
-		// we unmarshal our byteArray which contains our
-		// jsonFile's content into 'gbtr' which we defined above
-		json.Unmarshal(byteValue, &gbtr)
-
-		//fmt.Println(string(byteValue))
-		// we iterate through every user within our users array and
-		// print out the user Type, their name, and their facebook url
-		// as just an example
-	*/
-
-	//--2ND VERSION
 	// read file
 
 	fmt.Println("Loading JSON")
