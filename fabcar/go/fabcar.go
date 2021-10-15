@@ -78,47 +78,70 @@ func main() {
 		OBJ_QTY   float32 `json:"OBJ_QTY"`
 		TSENDER   string  `json:"TSENDER"`
 		TICK      int     `json:"TICK"`
+		OBJECT    string  `json:"OBJECT"`
 		TRECEIVER string  `json:"TRECEIVER"`
 	}
 
 	type GBtrs struct {
 		items []GBtr `json:"items"`
 	}
-
-	// Open our jsonFile
-	fmt.Println("Loading gbTransactions.json")
-	jsonFile, err := os.Open("gbTransactions/gbTransactions.json")
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("Loading gbTransactions.json successfull")
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile.Close()
-
-	// read our opened jsonFile as a byte array.
-	byteValue, r := ioutil.ReadAll(jsonFile)
-	if r != nil {
-		fmt.Println(err)
-	}
-
 	// we initialize our Users array
 	var gbtr GBtrs
 
-	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'gbtr' which we defined above
-	json.Unmarshal(byteValue, &gbtr)
+	/*
+		// Open our jsonFile
+		fmt.Println("Loading gbTransactions.json")
+		jsonFile, err := os.Open("gbTransactions/gbTransactions.json")
+		// if we os.Open returns an error then handle it
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("Loading gbTransactions.json successfull")
+		// defer the closing of our jsonFile so that we can parse it later on
+		defer jsonFile.Close()
 
-	// we iterate through every user within our users array and
-	// print out the user Type, their name, and their facebook url
-	// as just an example
+		// read our opened jsonFile as a byte array.
+		byteValue, r := ioutil.ReadAll(jsonFile)
+		if r != nil {
+			fmt.Println(err)
+		}
 
-	fmt.Printf("N. ele: %d \n", len(gbtr.items))
+
+
+		// we unmarshal our byteArray which contains our
+		// jsonFile's content into 'gbtr' which we defined above
+		json.Unmarshal(byteValue, &gbtr)
+
+		//fmt.Println(string(byteValue))
+		// we iterate through every user within our users array and
+		// print out the user Type, their name, and their facebook url
+		// as just an example
+	*/
+
+	//--2ND VERSION
+	// read file
+	fmt.Println("Loading JSON")
+	data, err := ioutil.ReadFile("gbTransactions/gbTransactions.json")
+	if err != nil {
+		fmt.Print(err)
+	}
+	fmt.Println("JSON Loaded")
+
+	// unmarshall it
+	err = json.Unmarshal(data, &gbtr)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+
+	fmt.Println(string(data))
+	fmt.Printf("N. of elements: %d\n", len(gbtr.items))
+
 	for i := 0; i < len(gbtr.items); i++ {
 		fmt.Println("OBJ_UIT: " + gbtr.items[i].OBJ_UIT)
 		fmt.Printf("OBJ_QTY: %s\n", gbtr.items[i].OBJ_QTY)
 		fmt.Println("TSENDER: " + gbtr.items[i].TSENDER)
 		fmt.Println("TICK: %s\n", gbtr.items[i].TICK)
+		fmt.Println("OBJECT: " + gbtr.items[i].OBJECT)
 		fmt.Println("TRECEIVER: " + gbtr.items[i].TRECEIVER)
 	}
 

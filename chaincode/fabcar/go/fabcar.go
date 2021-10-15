@@ -24,6 +24,7 @@ type GBtr struct {
 	OBJ_QTY   float32 `json:"obj_qty"`
 	TSENDER   string  `json:"sender"`
 	TICK      int     `json:"tick"`
+	OBJECT    string  `json:"object"`
 	TRECEIVER string  `json:"treceiver"`
 }
 
@@ -42,6 +43,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 			OBJ_QTY:   0,
 			TSENDER:   "init",
 			TICK:      0,
+			OBJECT:    "init",
 			TRECEIVER: "init",
 		},
 	}
@@ -59,12 +61,13 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 }
 
 // CreateGBtr adds a new gbtr to the world state with given details
-func (s *SmartContract) CreateGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string, obj_uit string, obj_qty float32, tsender string, tick int, treceiver string) error {
+func (s *SmartContract) CreateGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string, obj_uit string, obj_qty float32, tsender string, tick int, object string, treceiver string) error {
 	gbtr := GBtr{
 		OBJ_UIT:   obj_uit,
 		OBJ_QTY:   obj_qty,
 		TSENDER:   tsender,
 		TICK:      tick,
+		OBJECT:    object,
 		TRECEIVER: treceiver,
 	}
 
