@@ -83,7 +83,7 @@ func main() {
 	}
 
 	type GBtrs struct {
-		items []GBtr `json:"items"`
+		Items []GBtr `json:"items"`
 	}
 	// we initialize our Users array
 	var gbtr GBtrs
@@ -120,6 +120,7 @@ func main() {
 
 	//--2ND VERSION
 	// read file
+
 	fmt.Println("Loading JSON")
 	data, err := ioutil.ReadFile("gbTransactions/gbTransactions.json")
 	if err != nil {
@@ -134,15 +135,15 @@ func main() {
 	}
 
 	fmt.Println(string(data))
-	fmt.Printf("N. of elements: %d\n", len(gbtr.items))
+	fmt.Printf("N. of elements: %d\n", len(gbtr.Items))
 
-	for i := 0; i < len(gbtr.items); i++ {
-		fmt.Println("OBJ_UIT: " + gbtr.items[i].OBJ_UIT)
-		fmt.Printf("OBJ_QTY: %s\n", gbtr.items[i].OBJ_QTY)
-		fmt.Println("TSENDER: " + gbtr.items[i].TSENDER)
-		fmt.Println("TICK: %s\n", gbtr.items[i].TICK)
-		fmt.Println("OBJECT: " + gbtr.items[i].OBJECT)
-		fmt.Println("TRECEIVER: " + gbtr.items[i].TRECEIVER)
+	for i := 0; i < len(gbtr.Items); i++ {
+		fmt.Println("OBJ_UIT: " + gbtr.Items[i].OBJ_UIT)
+		fmt.Printf("OBJ_QTY: %s\n", gbtr.Items[i].OBJ_QTY)
+		fmt.Println("TSENDER: " + gbtr.Items[i].TSENDER)
+		fmt.Println("TICK: %s\n", gbtr.Items[i].TICK)
+		fmt.Println("OBJECT: " + gbtr.Items[i].OBJECT)
+		fmt.Println("TRECEIVER: " + gbtr.Items[i].TRECEIVER)
 	}
 
 	// ----------------------
