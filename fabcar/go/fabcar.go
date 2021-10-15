@@ -13,6 +13,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"encoding/json"
+
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
@@ -61,39 +63,68 @@ func main() {
 
 	contract := network.GetContract("fabcar")
 
-	result, err := contract.EvaluateTransaction("queryAllCars")
+	fmt.Println("\nAll Transactions on the ledger:")
+	result, err := contract.EvaluateTransaction("queryAllGBtrs")
 	if err != nil {
 		fmt.Printf("Failed to evaluate transaction: %s\n", err)
 		os.Exit(1)
 	}
 	fmt.Println(string(result))
 
-	result, err = contract.SubmitTransaction("createCar", "CAR10", "VW", "Polo", "Grey", "Mary")
-	if err != nil {
-		fmt.Printf("Failed to submit transaction: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Println(string(result))
+	//temp-json parsing
 
-	result, err = contract.EvaluateTransaction("queryCar", "CAR10")
-	if err != nil {
-		fmt.Printf("Failed to evaluate transaction: %s\n", err)
-		os.Exit(1)
-	}
-	fmt.Println(string(result))
-
-	_, err = contract.SubmitTransaction("changeCarOwner", "CAR10", "Archie")
-	if err != nil {
-		fmt.Printf("Failed to submit transaction: %s\n", err)
-		os.Exit(1)
+	type GBtr struct {
+		OBJ_UIT   string  `json:"OBJ_UIT"`
+		OBJ_QTY   float32 `json:"OBJ_QTY"`
+		TSENDER   string  `json:"TSENDER"`
+		TICK      int     `json:"TICK"`
+		TRECEIVER string  `json:"TRECEIVER"`
 	}
 
-	result, err = contract.EvaluateTransaction("queryCar", "CAR10")
-	if err != nil {
-		fmt.Printf("Failed to evaluate transaction: %s\n", err)
-		os.Exit(1)
+	type GBtrs struct {
+		items []GBtr `json:"items"`
 	}
-	fmt.Println(string(result))
+
+	// Open our jsonFile
+	fmt.Println("Loading gbTransactions.json")
+	jsonFile, err := os.Open("gbTransactions/gbTransactions.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Loading gbTransactions.json successfull")
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	// read our opened jsonFile as a byte array.
+	byteValue, r := ioutil.ReadAll(jsonFile)
+	if r != nil {
+		fmt.Println(err)
+	}
+
+	// we initialize our Users array
+	var gbtr GBtrs
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'gbtr' which we defined above
+	json.Unmarshal(byteValue, &gbtr)
+
+	// we iterate through every user within our users array and
+	// print out the user Type, their name, and their facebook url
+	// as just an example
+
+	fmt.Printf("N. ele: %d \n", len(gbtr.items))
+	for i := 0; i < len(gbtr.items); i++ {
+		fmt.Println("OBJ_UIT: " + gbtr.items[i].OBJ_UIT)
+		fmt.Printf("OBJ_QTY: %s\n", gbtr.items[i].OBJ_QTY)
+		fmt.Println("TSENDER: " + gbtr.items[i].TSENDER)
+		fmt.Println("TICK: %s\n", gbtr.items[i].TICK)
+		fmt.Println("TRECEIVER: " + gbtr.items[i].TRECEIVER)
+	}
+
+	// ----------------------
+
+	fmt.Println("END OF TEST")
 }
 
 func populateWallet(wallet *gateway.Wallet) error {

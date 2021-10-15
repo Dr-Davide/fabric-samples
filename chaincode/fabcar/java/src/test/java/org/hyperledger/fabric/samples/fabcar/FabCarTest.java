@@ -165,7 +165,7 @@ public final class FabCarTest {
         inOrder.verify(stub).putStringState("CAR7",
                 "{\"color\":\"violet\",\"make\":\"Fiat\",\"model\":\"Punto\",\"owner\":\"Pari\"}");
         inOrder.verify(stub).putStringState("CAR8",
-                "{\"color\":\"indigo\",\"make\":\"Tata\",\"model\":\"nano\",\"owner\":\"Valeria\"}");
+                "{\"color\":\"indigo\",\"make\":\"Tata\",\"model\":\"nano\",\"owner\":\"Valerio\"}");
         inOrder.verify(stub).putStringState("CAR9",
                 "{\"color\":\"brown\",\"make\":\"Holden\",\"model\":\"Barina\",\"owner\":\"Shotaro\"}");
     }

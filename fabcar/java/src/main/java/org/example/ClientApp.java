@@ -50,6 +50,16 @@ public class ClientApp {
 
 			result = contract.evaluateTransaction("queryCar", "CAR10");
 			System.out.println(new String(result));
+
+
+			System.out.println("MY TEST:");
+			contract.submitTransaction("createCar", "CAR12", "FIAT", "PANDA", "BLACK", "DRD");
+			result = contract.evaluateTransaction("queryCar", "CAR12");
+			System.out.println(new String(result));
+
+			System.out.println("Query all cars - AGAIN");
+			result = contract.evaluateTransaction("queryAllCars");
+			System.out.println(new String(result));
 		}
 	}
 

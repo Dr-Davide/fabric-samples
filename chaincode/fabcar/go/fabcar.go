@@ -12,43 +12,43 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// SmartContract provides functions for managing a car
+// SmartContract provides functions for managing a gbtr
 type SmartContract struct {
 	contractapi.Contract
 }
 
-// Car describes basic details of what makes up a car
-type Car struct {
-	Make   string `json:"make"`
-	Model  string `json:"model"`
-	Colour string `json:"colour"`
-	Owner  string `json:"owner"`
+// GBtr describes basic details of what makes up a GB-FLex transaction
+
+type GBtr struct {
+	OBJ_UIT   string  `json:"obj_uit"`
+	OBJ_QTY   float32 `json:"obj_qty"`
+	TSENDER   string  `json:"sender"`
+	TICK      int     `json:"tick"`
+	TRECEIVER string  `json:"treceiver"`
 }
 
 // QueryResult structure used for handling result of query
 type QueryResult struct {
 	Key    string `json:"Key"`
-	Record *Car
+	Record *GBtr
 }
 
-// InitLedger adds a base set of cars to the ledger
+// InitLedger adds a base set of GBtr to the ledger
 func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) error {
-	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
+	gbtrs := []GBtr{
+
+		GBtr{
+			OBJ_UIT:   "init",
+			OBJ_QTY:   0,
+			TSENDER:   "init",
+			TICK:      0,
+			TRECEIVER: "init",
+		},
 	}
 
-	for i, car := range cars {
-		carAsBytes, _ := json.Marshal(car)
-		err := ctx.GetStub().PutState("CAR"+strconv.Itoa(i), carAsBytes)
+	for i, gbtr := range gbtrs {
+		gbtrAsBytes, _ := json.Marshal(gbtr)
+		err := ctx.GetStub().PutState("GBTR"+strconv.Itoa(i), gbtrAsBytes)
 
 		if err != nil {
 			return fmt.Errorf("Failed to put to world state. %s", err.Error())
@@ -58,40 +58,41 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 	return nil
 }
 
-// CreateCar adds a new car to the world state with given details
-func (s *SmartContract) CreateCar(ctx contractapi.TransactionContextInterface, carNumber string, make string, model string, colour string, owner string) error {
-	car := Car{
-		Make:   make,
-		Model:  model,
-		Colour: colour,
-		Owner:  owner,
+// CreateGBtr adds a new gbtr to the world state with given details
+func (s *SmartContract) CreateGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string, obj_uit string, obj_qty float32, tsender string, tick int, treceiver string) error {
+	gbtr := GBtr{
+		OBJ_UIT:   obj_uit,
+		OBJ_QTY:   obj_qty,
+		TSENDER:   tsender,
+		TICK:      tick,
+		TRECEIVER: treceiver,
 	}
 
-	carAsBytes, _ := json.Marshal(car)
+	gbtrAsBytes, _ := json.Marshal(gbtr)
 
-	return ctx.GetStub().PutState(carNumber, carAsBytes)
+	return ctx.GetStub().PutState(gbtrNumber, gbtrAsBytes)
 }
 
-// QueryCar returns the car stored in the world state with given id
-func (s *SmartContract) QueryCar(ctx contractapi.TransactionContextInterface, carNumber string) (*Car, error) {
-	carAsBytes, err := ctx.GetStub().GetState(carNumber)
+// QueryGBtr returns the gbtr stored in the world state with given id
+func (s *SmartContract) QueryGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string) (*GBtr, error) {
+	gbtrAsBytes, err := ctx.GetStub().GetState(gbtrNumber)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read from world state. %s", err.Error())
 	}
 
-	if carAsBytes == nil {
-		return nil, fmt.Errorf("%s does not exist", carNumber)
+	if gbtrAsBytes == nil {
+		return nil, fmt.Errorf("%s does not exist", gbtrNumber)
 	}
 
-	car := new(Car)
-	_ = json.Unmarshal(carAsBytes, car)
+	gbtr := new(GBtr)
+	_ = json.Unmarshal(gbtrAsBytes, gbtr)
 
-	return car, nil
+	return gbtr, nil
 }
 
-// QueryAllCars returns all cars found in world state
-func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
+// QueryAllGBtrs returns all gbtr found in world state
+func (s *SmartContract) QueryAllGBtrs(ctx contractapi.TransactionContextInterface) ([]QueryResult, error) {
 	startKey := ""
 	endKey := ""
 
@@ -111,16 +112,17 @@ func (s *SmartContract) QueryAllCars(ctx contractapi.TransactionContextInterface
 			return nil, err
 		}
 
-		car := new(Car)
-		_ = json.Unmarshal(queryResponse.Value, car)
+		gbtr := new(GBtr)
+		_ = json.Unmarshal(queryResponse.Value, gbtr)
 
-		queryResult := QueryResult{Key: queryResponse.Key, Record: car}
+		queryResult := QueryResult{Key: queryResponse.Key, Record: gbtr}
 		results = append(results, queryResult)
 	}
 
 	return results, nil
 }
 
+/*
 // ChangeCarOwner updates the owner field of car with given id in world state
 func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterface, carNumber string, newOwner string) error {
 	car, err := s.QueryCar(ctx, carNumber)
@@ -135,7 +137,7 @@ func (s *SmartContract) ChangeCarOwner(ctx contractapi.TransactionContextInterfa
 
 	return ctx.GetStub().PutState(carNumber, carAsBytes)
 }
-
+*/
 func main() {
 
 	chaincode, err := contractapi.NewChaincode(new(SmartContract))
