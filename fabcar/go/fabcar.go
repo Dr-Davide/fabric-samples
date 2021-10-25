@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"encoding/json"
 
@@ -77,7 +78,7 @@ func main() {
 		OBJ_UIT   string  `json:"OBJ_UIT"`
 		OBJ_QTY   float32 `json:"OBJ_QTY"`
 		TSENDER   string  `json:"TSENDER"`
-		TICK      int     `json:"TICK"`
+		TICK      float32 `json:"TICK"`
 		OBJECT    string  `json:"OBJECT"`
 		TRECEIVER string  `json:"TRECEIVER"`
 	}
@@ -103,22 +104,57 @@ func main() {
 		fmt.Println("error:", err)
 	}
 
-	fmt.Println(string(data))
-	fmt.Printf("N. of elements: %d\n", len(gbtr.Items))
+	//fmt.Println(string(data))
+	fmt.Printf("N. of elements in JSON: %d\n", len(gbtr.Items))
 
 	for i := 0; i < len(gbtr.Items); i++ {
-		fmt.Println("OBJ_UIT: " + gbtr.Items[i].OBJ_UIT)
-		fmt.Printf("OBJ_QTY: %s\n", gbtr.Items[i].OBJ_QTY)
-		fmt.Println("TSENDER: " + gbtr.Items[i].TSENDER)
-		fmt.Println("TICK: %s\n", gbtr.Items[i].TICK)
-		fmt.Println("OBJECT: " + gbtr.Items[i].OBJECT)
-		fmt.Println("TRECEIVER: " + gbtr.Items[i].TRECEIVER)
+		sOBJ_QTY := fmt.Sprint(gbtr.Items[i].OBJ_QTY)
+		sTICK := fmt.Sprint(gbtr.Items[i].TICK)
+		TRid := "GBTR" + strconv.Itoa(i+1)
+		/*
+			fmt.Println("\nTransaction ID: " + TRid)
+			fmt.Println("OBJ_UIT: " + gbtr.Items[i].OBJ_UIT)
+			//fmt.Printf("OBJ_QTY: %s\n", gbtr.Items[i].OBJ_QTY)
+			fmt.Println("OBJ_QTY: " + sOBJ_QTY)
+			fmt.Println("TSENDER: " + gbtr.Items[i].TSENDER)
+			fmt.Println("TICK: " + sTICK)
+			fmt.Println("OBJECT: " + gbtr.Items[i].OBJECT)
+			fmt.Println("TRECEIVER: " + gbtr.Items[i].TRECEIVER)
+		*/
+
+		// Creating a new Transaction
+		fmt.Println("Creating new Transactions:")
+		result, err = contract.SubmitTransaction("createGBtr", TRid, gbtr.Items[i].OBJ_UIT, sOBJ_QTY, gbtr.Items[i].TSENDER, sTICK, gbtr.Items[i].OBJECT, gbtr.Items[i].TRECEIVER)
+		if err != nil {
+			fmt.Printf("Failed to submit transaction: %s\n", err)
+			os.Exit(1)
+		}
+		//why is this not printing anything?
+		fmt.Println(string(result))
+
+		// Evaluating the transaction
+		fmt.Println("Evaluating Transactions:")
+		result, err = contract.EvaluateTransaction("queryGBtr", TRid)
+		if err != nil {
+			fmt.Printf("Failed to evaluate transaction: %s\n", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(result))
 	}
 
-	// ----------------------
+	// Print ledger content
+	fmt.Println("All Transactions on the ledger:")
+	result, err = contract.EvaluateTransaction("queryAllGBtrs")
+	if err != nil {
+		fmt.Printf("Failed to evaluate transaction: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Println(string(result))
 
 	fmt.Println("END OF TEST")
 }
+
+// ------
 
 func populateWallet(wallet *gateway.Wallet) error {
 	credPath := filepath.Join(

@@ -20,12 +20,12 @@ type SmartContract struct {
 // GBtr describes basic details of what makes up a GB-FLex transaction
 
 type GBtr struct {
-	OBJ_UIT   string  `json:"obj_uit"`
-	OBJ_QTY   float32 `json:"obj_qty"`
-	TSENDER   string  `json:"sender"`
-	TICK      int     `json:"tick"`
-	OBJECT    string  `json:"object"`
-	TRECEIVER string  `json:"treceiver"`
+	OBJ_UIT   string `json:"obj_uit"`
+	OBJ_QTY   string `json:"obj_qty"`
+	TSENDER   string `json:"sender"`
+	TICK      string `json:"tick"`
+	OBJECT    string `json:"object"`
+	TRECEIVER string `json:"treceiver"`
 }
 
 // QueryResult structure used for handling result of query
@@ -40,9 +40,9 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 
 		GBtr{
 			OBJ_UIT:   "init",
-			OBJ_QTY:   0,
+			OBJ_QTY:   "0",
 			TSENDER:   "init",
-			TICK:      0,
+			TICK:      "0",
 			OBJECT:    "init",
 			TRECEIVER: "init",
 		},
@@ -61,7 +61,7 @@ func (s *SmartContract) InitLedger(ctx contractapi.TransactionContextInterface) 
 }
 
 // CreateGBtr adds a new gbtr to the world state with given details
-func (s *SmartContract) CreateGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string, obj_uit string, obj_qty float32, tsender string, tick int, object string, treceiver string) error {
+func (s *SmartContract) CreateGBtr(ctx contractapi.TransactionContextInterface, gbtrNumber string, obj_uit string, obj_qty string, tsender string, tick string, object string, treceiver string) error {
 	gbtr := GBtr{
 		OBJ_UIT:   obj_uit,
 		OBJ_QTY:   obj_qty,
